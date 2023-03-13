@@ -2,22 +2,24 @@ import { useEffect, useState, useCallback } from "react";
 import Head from "next/head";
 import Image from "next/image";
 import styles from "@/styles/Home.module.css";
-import { sealosApp, createSealosApp } from "sealos-desktop-sdk";
+import { sealosApp, createSealosApp } from "sealos-desktop-sdk/app";
 
 export default function Home() {
   const [showData, setShowData] = useState<any>();
   useEffect(() => {
-    return createSealosApp({
-      appKey: "sealos-app-sdk-demo",
-    });
+    const app = createSealosApp();
+
+    (async() => {
+      const res = await sealosApp.getUserInfo();
+      setShowData(JSON.stringify(res));
+    })()
+
+    return app;
   }, []);
 
   const getUserInfo = useCallback(async () => {
+    console.log('onclick get userInfo')
     const res = await sealosApp.getUserInfo();
-    setShowData(JSON.stringify(res));
-  }, []);
-  const getApps = useCallback(async () => {
-    const res = await sealosApp.getApps();
     setShowData(JSON.stringify(res));
   }, []);
 
@@ -83,7 +85,6 @@ export default function Home() {
           }}
         >
           <button onClick={getUserInfo}>getUserInfo</button>
-          <button onClick={getApps}>get APP mock data</button>
         </div>
 
         <div
